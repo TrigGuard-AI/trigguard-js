@@ -5,19 +5,27 @@ npm install trigguard
 ```
 
 ```js
-import { verifyReceipt } from "trigguard";
+import { TrigGuard, TrigGuardError } from "trigguard";
+
+const tg = new TrigGuard();
 
 const receipt = {
   decision: "PERMIT",
   timestamp: new Date().toISOString(),
 };
 
-const result = await verifyReceipt(receipt);
-
-console.log(result.valid, result);
+try {
+  const result = await tg.verify.receipt(receipt);
+  console.log(result.valid, result);
+} catch (err) {
+  if (err instanceof TrigGuardError) {
+    console.error(err.code, err.message, err.request_id);
+  }
+  throw err;
+}
 ```
 
-That’s the whole flow: install → import → call → inspect the JSON response.
+Install → construct client → call → handle **`TrigGuardError`** predictably.
 
 ---
 
@@ -27,7 +35,7 @@ That’s the whole flow: install → import → call → inspect the JSON respon
 npm install trigguard
 ```
 
-Or from a clone:
+From a git clone:
 
 ```bash
 npm install ./path/to/trigguard-js
@@ -35,15 +43,25 @@ npm install ./path/to/trigguard-js
 
 ---
 
-## `curl` (no install)
+## Custom authority (enterprise / self-hosted)
 
-Test vectors:
+```js
+const tg = new TrigGuard({
+  authority: "https://trigguardai.com",
+});
+```
+
+You can also pass a string shorthand: `new TrigGuard("https://your-authority.example")`.
+
+Environment fallbacks (Node): **`TRIGGUARD_AUTHORITY`** or **`TRIGGUARD_BASE_URL`** when no constructor argument is given.
+
+---
+
+## `curl` (no install)
 
 ```bash
 curl -sS https://trigguardai.com/protocol/test-vectors | head
 ```
-
-Verify receipt (shape must match what the authority expects; you may get a structured error until the body matches production schema):
 
 ```bash
 curl -sS -X POST https://trigguardai.com/protocol/verify-receipt \
@@ -63,27 +81,37 @@ node examples/verify-receipt.js
 
 ## API
 
-All calls target **`https://trigguardai.com`** by default (override with `TRIGGUARD_BASE_URL` or `options.baseURL`).
+| Member | Description |
+|--------|-------------|
+| `new TrigGuard(options?)` | Client; default authority `https://trigguardai.com` |
+| `tg.authority` | Resolved origin (no trailing slash) |
+| `tg.verify.receipt(body)` | `POST /protocol/verify-receipt` |
+| `tg.verify.signature(body)` | `POST /protocol/verify-signature` |
+| `tg.protocol.capabilities()` | `GET /protocol/capabilities` |
 
-| Function | Description |
-|----------|-------------|
-| `verifyReceipt(receipt, options?)` | `POST /protocol/verify-receipt` |
-| `verifySignature(payload, options?)` | `POST /protocol/verify-signature` |
-| `fetchCapabilities(options?)` | `GET /protocol/capabilities` |
+### Errors
 
-Non-success HTTP statuses throw an `Error` with `.status` and `.body` when JSON was returned.
+Failures throw **`TrigGuardError`** (extends `Error`):
+
+- `err.code` — machine-readable (from API when present, else `HTTP_ERROR` / `NETWORK_ERROR`)
+- `err.message` — human-readable
+- `err.request_id` — when the authority returns one
+- `err.status` — HTTP status when applicable
+- `err.body` — parsed JSON body when available
+- `err.toJSON()` — stable shape for logs
 
 ---
 
 ## What this is
 
-**TrigGuard** is execution-governance infrastructure: deterministic **PERMIT / DENY / SILENCE** before irreversible actions, with verifiable receipts. This package is a **small HTTP client** for the **public** protocol endpoints on **trigguardai.com**. It does not embed policy evaluation—that lives in TrigGuard **authority** / hosted services.
+**TrigGuard** is execution-governance infrastructure: deterministic **PERMIT / DENY / SILENCE** before irreversible actions, with verifiable receipts. This package is a **small HTTP client** for the **public** protocol endpoints. Policy evaluation lives in **authority** / hosted services — not in this SDK.
 
-- **Protocol & types (npm):** [`@trigguard/protocol`](https://www.npmjs.com/package/@trigguard/protocol)  
-- **Monorepo / core:** [TrigGuard-AI/TrigGuard](https://github.com/TrigGuard-AI/TrigGuard)
+- **Types & constants (npm):** [`@trigguard/protocol`](https://www.npmjs.com/package/@trigguard/protocol)
+- **Core monorepo:** [TrigGuard-AI/TrigGuard](https://github.com/TrigGuard-AI/TrigGuard)
+- **This SDK:** [TrigGuard-AI/trigguard-js](https://github.com/TrigGuard-AI/trigguard-js)
 
 ---
 
 ## License
 
-Apache-2.0. See [LICENSE](./LICENSE) and [NOTICE](./NOTICE).
+Apache-2.0 — see [LICENSE](./LICENSE) and [NOTICE](./NOTICE).

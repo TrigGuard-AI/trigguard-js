@@ -1,8 +1,13 @@
-import { verifyReceipt } from "../src/index.js";
+import { TrigGuard } from "../src/index.js";
+
+const tg = new TrigGuard();
 
 const receipt = {
   decision: "PERMIT",
   timestamp: new Date().toISOString(),
 };
 
-verifyReceipt(receipt).then(console.log).catch(console.error);
+tg.verify
+  .receipt(receipt)
+  .then((r) => console.log(r.valid, r))
+  .catch(console.error);

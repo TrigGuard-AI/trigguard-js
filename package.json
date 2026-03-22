@@ -1,6 +1,6 @@
 {
   "name": "trigguard",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Official JavaScript SDK for the TrigGuard Protocol",
   "type": "module",
   "main": "src/index.js",
@@ -29,5 +29,13 @@
   "bugs": {
     "url": "https://github.com/TrigGuard-AI/trigguard-js/issues"
   },
-  "homepage": "https://github.com/TrigGuard-AI/trigguard-js#readme"
+  "homepage": "https://github.com/TrigGuard-AI/trigguard-js#readme",
+  "scripts": {
+    "build": "node -e \"import('./src/index.js').then(m => console.log('ok:', Object.keys(m).sort().join(', ')))\"",
+    "lint": "eslint .",
+    "test": "node --test test/*.test.js"
+  },
+  "devDependencies": {
+    "eslint": "^9.21.0"
+  }
 }
