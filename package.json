@@ -1,6 +1,6 @@
 {
   "name": "trigguard",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "Official JavaScript SDK for the TrigGuard Protocol",
   "type": "module",
   "main": "src/index.js",
@@ -24,12 +24,12 @@
   "license": "Apache-2.0",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/TrigGuard-AI/trigguard-js.git"
+    "url": "https://github.com/TrigGuard-AI/trigguard-js.git"
   },
   "bugs": {
     "url": "https://github.com/TrigGuard-AI/trigguard-js/issues"
   },
-  "homepage": "https://github.com/TrigGuard-AI/trigguard-js#readme",
+  "homepage": "https://trigguardai.com",
   "engines": {
     "node": ">=18"
   },

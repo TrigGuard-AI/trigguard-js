@@ -1,5 +1,10 @@
 # TrigGuard JavaScript SDK
 
+[![CI](https://github.com/TrigGuard-AI/trigguard-js/actions/workflows/ci.yml/badge.svg)](https://github.com/TrigGuard-AI/trigguard-js/actions/workflows/ci.yml)
+[![npm](https://img.shields.io/npm/v/trigguard?label=npm)](https://www.npmjs.com/package/trigguard)
+
+Official **minimal HTTP client** for the public **trigguardai.com** protocol surface (`verify-receipt`, `verify-signature`, `capabilities`). For TypeScript types and contract constants, use **`@trigguard/protocol`**. For the fuller TS gateway SDK from the core monorepo, see **`@trigguard/sdk`** — different package; this repo stays intentionally small.
+
 ```bash
 npm install trigguard
 ```
