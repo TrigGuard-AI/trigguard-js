@@ -30,6 +30,9 @@
     "url": "https://github.com/TrigGuard-AI/trigguard-js/issues"
   },
   "homepage": "https://github.com/TrigGuard-AI/trigguard-js#readme",
+  "engines": {
+    "node": ">=18"
+  },
   "scripts": {
     "build": "node -e \"import('./src/index.js').then(m => console.log('ok:', Object.keys(m).sort().join(', ')))\"",
     "lint": "eslint .",
