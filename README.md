@@ -14,7 +14,7 @@ const receipt = {
 
 const result = await verifyReceipt(receipt);
 
-console.log(result);
+console.log(result.valid, result);
 ```
 
 That’s the whole flow: install → import → call → inspect the JSON response.
