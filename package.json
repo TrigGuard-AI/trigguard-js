@@ -1,0 +1,33 @@
+{
+  "name": "trigguard",
+  "version": "0.1.0",
+  "description": "Official JavaScript SDK for the TrigGuard Protocol",
+  "type": "module",
+  "main": "src/index.js",
+  "exports": {
+    ".": "./src/index.js"
+  },
+  "files": [
+    "src",
+    "README.md",
+    "LICENSE",
+    "NOTICE"
+  ],
+  "keywords": [
+    "trigguard",
+    "ai-security",
+    "verification",
+    "protocol",
+    "ai-governance"
+  ],
+  "author": "TrigGuard AI",
+  "license": "Apache-2.0",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/TrigGuard-AI/trigguard-js.git"
+  },
+  "bugs": {
+    "url": "https://github.com/TrigGuard-AI/trigguard-js/issues"
+  },
+  "homepage": "https://github.com/TrigGuard-AI/trigguard-js#readme"
+}
