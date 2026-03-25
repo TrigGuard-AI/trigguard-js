@@ -120,3 +120,42 @@ Failures throw **`TrigGuardError`** (extends `Error`):
 ## License
 
 Apache-2.0 — see [LICENSE](./LICENSE) and [NOTICE](./NOTICE).
+
+
+## Role in the TrigGuard Ecosystem
+
+The trigguard-js repository provides the JavaScript SDK used by
+applications to interact with TrigGuard execution gates and verify
+protocol compliance.
+
+## Core Protocol Concepts
+
+Execution Surface  
+The boundary where a program attempts to execute an irreversible action.
+
+Protocol Contract  
+Rules defined by trigguard-protocol that determine whether execution
+is allowed.
+
+Protocol Fingerprint  
+Identifier representing the protocol version used for decision
+evaluation.
+
+Audit Bundle  
+Evidence package produced after execution evaluation.
+
+Verifier  
+Independent tool used to validate an audit bundle.
+
+OER (Operational Evidence Record)  
+Structured records describing protocol decisions.
+
+## Repository Map
+
+trigguard-protocol → canonical protocol specification  
+trigguard-core-reference → reference implementation  
+trigguard-js → SDK surfaces  
+cloud → hosted enforcement layer  
+docs → documentation  
+site → public discovery  
+TrigGuard → demos and tooling
