@@ -1,9 +1,17 @@
 # TrigGuard JavaScript SDK
 
+> **Deprecation notice:** This standalone repo is superseded by the canonical product SDK on npm: **`npm install trigguard`**. New integrations should use [`createTrigGuard()`](https://github.com/TrigGuard-AI/TrigGuard/blob/main/docs/adoption/FIRST_10_MINUTES.md) from the [TrigGuard monorepo](https://github.com/TrigGuard-AI/TrigGuard). This package remains for legacy HTTP client use only.
+
 [![CI](https://github.com/TrigGuard-AI/trigguard-js/actions/workflows/ci.yml/badge.svg)](https://github.com/TrigGuard-AI/trigguard-js/actions/workflows/ci.yml)
 [![npm](https://img.shields.io/npm/v/trigguard?label=npm)](https://www.npmjs.com/package/trigguard)
 
-Official **minimal HTTP client** for the public **trigguardai.com** protocol surface (`verify-receipt`, `verify-signature`, `capabilities`). For TypeScript types and contract constants, use **`@trigguard/protocol`**. For the fuller TS gateway SDK from the core monorepo, see **`@trigguard/sdk`** — different package; this repo stays intentionally small.
+**TrigGuard is a verification layer:** autonomous apps and agents only execute irreversible actions when backed by an auditable **PERMIT** (or **DENY** / **SILENCE**) receipt from the authority.
+
+This package is the **minimal HTTP client** for the public **trigguardai.com** protocol surface. For TypeScript types use **`@trigguard/protocol`**. For the fuller gateway SDK from the core monorepo, see **`@trigguard/sdk`** (different package).
+
+---
+
+## Quickstart
 
 ```bash
 npm install trigguard
@@ -21,6 +29,7 @@ const receipt = {
 
 try {
   const result = await tg.verify.receipt(receipt);
+  if (!result.valid) throw new Error("invalid receipt");
   console.log(result.valid, result);
 } catch (err) {
   if (err instanceof TrigGuardError) {
@@ -29,8 +38,6 @@ try {
   throw err;
 }
 ```
-
-Install → construct client → call → handle **`TrigGuardError`** predictably.
 
 ---
 
@@ -48,21 +55,37 @@ npm install ./path/to/trigguard-js
 
 ---
 
-## Custom authority (enterprise / self-hosted)
+## Request flow
 
-```js
-const tg = new TrigGuard({
-  authority: "https://trigguardai.com",
-});
+TrigGuard sits **between** your application and execution: the SDK talks to the **public protocol API**; the **authority** runs policy verification and returns a **signed receipt**; your app gates the real-world action on that outcome.
+
+```mermaid
+flowchart LR
+  App[Application / AI agent]
+  SDK[TrigGuard SDK]
+  API[TrigGuard authority API]
+  Verify[Policy verification]
+  Receipt[Signed receipt]
+
+  App -->|action / receipt| SDK
+  SDK -->|verify-receipt| API
+  API --> Verify
+  Verify -->|PERMIT · DENY · SILENCE| API
+  API -->|receipt JSON| SDK
+  SDK -->|result| App
 ```
-
-You can also pass a string shorthand: `new TrigGuard("https://your-authority.example")`.
-
-Environment fallbacks (Node): **`TRIGGUARD_AUTHORITY`** or **`TRIGGUARD_BASE_URL`** when no constructor argument is given.
 
 ---
 
-## `curl` (no install)
+## Examples
+
+**Run the repo example:**
+
+```bash
+node examples/verify-receipt.js
+```
+
+**`curl` (no install):**
 
 ```bash
 curl -sS https://trigguardai.com/protocol/test-vectors | head
@@ -74,13 +97,16 @@ curl -sS -X POST https://trigguardai.com/protocol/verify-receipt \
   -d '{"decision":"PERMIT","timestamp":"2026-01-01T00:00:00.000Z"}'
 ```
 
----
+**Custom authority** (enterprise / self-hosted):
 
-## Runnable example in this repo
-
-```bash
-node examples/verify-receipt.js
+```js
+const tg = new TrigGuard({
+  authority: "https://trigguardai.com",
+});
 ```
+
+String shorthand: `new TrigGuard("https://your-authority.example")`.  
+Node env fallbacks: **`TRIGGUARD_AUTHORITY`** or **`TRIGGUARD_BASE_URL`**.
 
 ---
 
@@ -109,7 +135,7 @@ Failures throw **`TrigGuardError`** (extends `Error`):
 
 ## What this is
 
-**TrigGuard** is execution-governance infrastructure: deterministic **PERMIT / DENY / SILENCE** before irreversible actions, with verifiable receipts. This package is a **small HTTP client** for the **public** protocol endpoints. Policy evaluation lives in **authority** / hosted services — not in this SDK.
+**TrigGuard** is execution-governance infrastructure: deterministic **PERMIT / DENY / SILENCE** before irreversible actions, with verifiable receipts. This SDK does **not** embed policy evaluation — that lives in **authority** / hosted services.
 
 - **Types & constants (npm):** [`@trigguard/protocol`](https://www.npmjs.com/package/@trigguard/protocol)
 - **Core monorepo:** [TrigGuard-AI/TrigGuard](https://github.com/TrigGuard-AI/TrigGuard)
